@@ -9,72 +9,128 @@
             font-family: Arial, sans-serif;
             background-color: #2f3136;
             color: white;
-            padding: 20px;
-        }
-        h1 {
             text-align: center;
+            padding: 50px;
         }
-        input, button {
-            width: 300px;
+
+        input[type="text"] {
             padding: 10px;
-            margin: 10px 0;
             font-size: 16px;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #36393f;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 400px;
             border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        .copy-btn {
-            padding: 5px 10px;
+
+        button {
+            padding: 10px 20px;
             background-color: #7289da;
             color: white;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
         }
-        .copy-btn:hover {
+
+        button:hover {
             background-color: #5b6eae;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .webhook {
+            background-color: #36393f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-wrap: break-word;
+            width: 80%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .copy-button {
+            background-color: #43b581;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #39a070;
         }
     </style>
 </head>
 <body>
     <h1>Discord Webhook Finder</h1>
-    <form id="guildForm">
-        <input type="text" id="guildId" placeholder="Enter Discord Guild ID" required>
-        <button type="submit">Submit</button>
-    </form>
-    <div class="result" id="result"></div>
+    <p>Enter the Guild ID (Server ID) and Webhook URL:</p>
+    
+    <input type="text" id="guildId" placeholder="Enter Guild ID">
+    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL">
+    <button onclick="saveWebhook()">Save Webhook</button>
+
+    <div id="result"></div>
 
     <script>
-        document.getElementById('guildForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const guildId = document.getElementById('guildId').value;
+        // Check if there are any saved webhooks in localStorage
+        window.onload = function() {
+            const savedWebhooks = JSON.parse(localStorage.getItem('webhooks')) || [];
+            displayWebhooks(savedWebhooks);
+        }
 
-            fetch(`/find-webhook?guildId=${guildId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('result');
-                    if (data.webhook) {
-                        resultDiv.innerHTML = `
-                            <p>Webhook found: <span id="webhook">${data.webhook}</span></p>
-                            <button class="copy-btn" onclick="copyWebhook()">Copy Webhook</button>
-                        `;
-                    } else {
-                        resultDiv.innerHTML = '<p>No webhook found for this server.</p>';
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('result').innerHTML = 'Error occurred. Please try again later.';
-                });
-        });
+        function saveWebhook() {
+            const guildId = document.getElementById("guildId").value;
+            const webhookUrl = document.getElementById("webhookUrl").value;
+            
+            if (!guildId || !webhookUrl) {
+                alert("Please enter both Guild ID and Webhook URL");
+                return;
+            }
 
-        function copyWebhook() {
-            const webhook = document.getElementById('webhook').innerText;
-            navigator.clipboard.writeText(webhook).then(() => {
-                alert('Webhook copied to clipboard!');
+            const savedWebhooks = JSON.parse(localStorage.getItem('webhooks')) || [];
+            savedWebhooks.push({ guildId, webhookUrl });
+
+            // Save webhooks in localStorage
+            localStorage.setItem('webhooks', JSON.stringify(savedWebhooks));
+            
+            // Display the updated list
+            displayWebhooks(savedWebhooks);
+
+            // Clear inputs
+            document.getElementById("guildId").value = "";
+            document.getElementById("webhookUrl").value = "";
+        }
+
+        function displayWebhooks(webhooks) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = '';
+
+            if (webhooks.length === 0) {
+                resultDiv.innerHTML = "No webhooks saved.";
+                return;
+            }
+
+            webhooks.forEach(webhook => {
+                const webhookElement = `
+                    <div class="webhook">
+                        <p><strong>Guild ID:</strong> ${webhook.guildId}</p>
+                        <p><strong>Webhook URL:</strong> <span>${webhook.webhookUrl}</span></p>
+                        <button class="copy-button" onclick="copyWebhook('${webhook.webhookUrl}')">Copy Webhook</button>
+                    </div>
+                `;
+                resultDiv.innerHTML += webhookElement;
+            });
+        }
+
+        function copyWebhook(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Webhook URL copied to clipboard!");
             });
         }
     </script>
