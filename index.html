@@ -3,219 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Discord Raid Bot</title>
+    <title>Discord Ticket System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #fff;
-            text-align: center;
-            padding: 50px;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: white;
         }
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        label, input, button {
+            margin-bottom: 10px;
         }
         button {
-            background-color: #ff5c5c;
+            background-color: #0099ff;
+            border: none;
+            padding: 10px;
             cursor: pointer;
+            color: white;
         }
         button:hover {
-            background-color: #ff3333;
+            background-color: #0077cc;
         }
-        h1 {
-            color: #ff5c5c;
-            font-size: 36px;
-        }
-        .embed-container {
-            margin-top: 30px;
-            color: #fff;
-            padding: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            display: inline-block;
-            width: 80%;
-            text-align: left;
-        }
-        .embed {
-            margin: 10px 0;
-        }
-        .embed-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ff5c5c;
-        }
-        .embed-description {
-            font-size: 16px;
-        }
-        .embed-image {
-            width: 100%;
-            border-radius: 10px;
+        #response {
+            margin-top: 20px;
+            text-align: center;
+            color: green;
         }
     </style>
 </head>
 <body>
 
-    <h1>Ultimate Raid Generator</h1>
-    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL" style="width: 80%; padding: 10px; font-size: 16px;"/>
-    <br>
-    <button onclick="generateRaid()">RAID NOW!</button>
+    <h2>Create a Ticket</h2>
+    <form id="ticketForm">
+        <label for="webhookURL">Webhook URL:</label>
+        <input type="text" id="webhookURL" placeholder="Enter your Discord Webhook URL" required>
+        
+        <label for="ticketChannel">Channel ID:</label>
+        <input type="text" id="ticketChannel" placeholder="Enter Channel ID" required>
+        
+        <button type="submit">Create Ticket</button>
+    </form>
 
-    <div class="embed-container" id="embedOutput"></div>
+    <div id="response"></div>
 
     <script>
-        const usernames = [
-            "💀DeathBringer💀", "⚡ThunderStrike⚡", "🔥BlazeRider🔥", "🌙NightCrawler🌙",
-            "❄️FrostByte❄️", "🖤DarkVoid🖤", "💎CrystalHunter💎", "🌪️Tornado🌪️",
-            "🎭PhantomMask🎭", "⚔️WarLord⚔️", "🦾CyberNinja🦾", "🌊TidalWave🌊",
-            "saturn#0000", "xynezal", "S1N#1436", "wxves#0001", "RaidMaster69", "DestroyerBot"
-        ];
+        document.getElementById('ticketForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        const raidMessages = [
-            "💥 GET RAIDED NOOBS! 💥",
-            "🚀 YOUR SERVER IS UNDER ATTACK! 🚀",
-            "⚡ THUNDER RAID INCOMING! ⚡",
-            "🔥 BURN THIS SERVER DOWN! 🔥",
-            "💀 DEATH TO ALL ADMINS! 💀",
-            "🌪️ TORNADO RAID ACTIVATED! 🌪️",
-            "LOL THIS SERVER SUCKS",
-            "GET REKT KIDS",
-            "RAID GANG ON TOP",
-            "DELETE THIS TRASH SERVER"
-        ];
+            const webhookURL = document.getElementById('webhookURL').value;
+            const ticketChannel = document.getElementById('ticketChannel').value;
 
-        const embedColors = ['#FF0000', '#00FF00', '#0000FF', '#FF00FF', '#FFFF00', '#00FFFF', '#FF8000', '#8000FF'];
+            // Create the embed payload
+            const embedPayload = {
+                "content": null,
+                "embeds": [{
+                    "color": 7506394,
+                    "title": "New Ticket Created",
+                    "description": `A new ticket was created in channel ID: ${ticketChannel}`,
+                    "fields": [{
+                        "name": "Ticket Channel ID",
+                        "value": ticketChannel,
+                        "inline": true
+                    }],
+                    "timestamp": new Date().toISOString()
+                }]
+            };
 
-        const images = [
-            "https://i.imgur.com/fKL9TmC.jpg", // Destruction
-            "https://i.imgur.com/gFaJLzd.jpg", // Warning
-            "https://i.imgur.com/LbYpVzm.jpg", // Takeover
-            "https://i.imgur.com/nfV7Wn7.jpg", // Chaos
-            "https://i.imgur.com/9jO0TVe.jpg"  // Apocalypse
-        ];
-
-        function getRandomElement(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        function createRaidEmbed() {
-            const embedTypes = ['destruction', 'warning', 'takeover', 'chaos', 'apocalypse'];
-            const embedType = getRandomElement(embedTypes);
-
-            let embed = {};
-            const image = getRandomElement(images); // Get a random image for each raid
-
-            if (embedType === 'destruction') {
-                embed = {
-                    title: "💥 SERVER DESTRUCTION PROTOCOL INITIATED 💥",
-                    description: "🔥 **YOUR SERVER IS BEING DEMOLISHED!** 🔥\n\n⚡ Resistance is futile ⚡\n🌪️ Prepare for total annihilation 🌪️",
-                    color: getRandomElement(embedColors),
-                    fields: [
-                        { name: "💀 Status", value: "**UNDER ATTACK**", inline: true },
-                        { name: "🎯 Target", value: "**ALL CHANNELS**", inline: true },
-                        { name: "⏰ Time Left", value: "**0 SECONDS**", inline: true }
-                    ],
-                    image: { url: image },
-                    footer: { text: "Raid Bot 2025 | Unstoppable Force" }
-                };
-            } else if (embedType === 'warning') {
-                embed = {
-                    title: "⚠️ CRITICAL SECURITY BREACH DETECTED ⚠️",
-                    description: "🚨 **UNAUTHORIZED ACCESS GRANTED** 🚨\n\n🖤 Your defenses have been breached\n⚔️ Surrender now or face the consequences",
-                    color: '#FF0000',
-                    fields: [
-                        { name: "🔓 Access Level", value: "**ADMINISTRATOR**", inline: true },
-                        { name: "🎭 Intruders", value: "**999+**", inline: true },
-                        { name: "🔥 Threat Level", value: "**MAXIMUM**", inline: true }
-                    ],
-                    image: { url: image },
-                    footer: { text: "Elite Hacker Collective | Anonymous" }
-                };
-            } else if (embedType === 'takeover') {
-                embed = {
-                    title: "👑 SERVER TAKEOVER IN PROGRESS 👑",
-                    description: "🎯 **THIS TERRITORY IS NOW OURS!** 🎯\n\n🖤 New management has arrived\n⚡ Bow down to your new overlords",
-                    color: '#8000FF',
-                    fields: [
-                        { name: "👑 New Owner", value: "**RAID KING**", inline: true },
-                        { name: "📈 Control %", value: "**100%**", inline: true },
-                        { name: "🎭 Army Size", value: "**UNLIMITED**", inline: true }
-                    ],
-                    image: { url: image },
-                    footer: { text: "Raid Empire | Total Domination Achieved" }
-                };
-            } else if (embedType === 'chaos') {
-                embed = {
-                    title: "🌪️ CHAOS ENGINE ACTIVATED 🌪️",
-                    description: "🔥 **PURE PANDEMONIUM UNLEASHED!** 🔥\n\n💀 Order has been destroyed\n⚡ Anarchy reigns supreme",
-                    color: '#FF8000',
-                    fields: [
-                        { name: "🎲 Chaos Level", value: "**INFINITE**", inline: true },
-                        { name: "💥 Destruction", value: "**TOTAL**", inline: true },
-                        { name: "🌊 Wave #", value: `**${Math.floor(Math.random() * 999)}**`, inline: true }
-                    ],
-                    image: { url: image },
-                    footer: { text: "Chaos Lords | Bringers of Mayhem" }
-                };
-            } else {
-                embed = {
-                    title: "🔥 DIGITAL APOCALYPSE COMMENCED 🔥",
-                    description: "💀 **THE END TIMES HAVE ARRIVED** 💀\n\n⚡ Your server burns in digital flames\n🌪️ No salvation, only destruction",
-                    color: '#000000',
-                    fields: [
-                        { name: "☠️ Survivors", value: "**0**", inline: true },
-                        { name: "🔥 Burn Rate", value: "**100%/sec**", inline: true },
-                        { name: "⏳ Hope Left", value: "**NONE**", inline: true }
-                    ],
-                    image: { url: image },
-                    footer: { text: "Apocalypse Protocol | Final Phase Active" }
-                };
-            }
-            return embed;
-        }
-
-        function sendWebhook(webhookUrl, embed) {
-            fetch(webhookUrl, {
+            // Send the embed to the webhook URL
+            fetch(webhookURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: getRandomElement(usernames),
-                    avatar_url: 'https://i.imgur.com/fKL9TmC.jpg', // Example Avatar
-                    embeds: [embed]
-                })
+                body: JSON.stringify(embedPayload)
             })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Successfully sent raid to webhook');
+            .then(response => response.json())
+            .then(data => {
+                if (data.type === 6) {
+                    document.getElementById('response').innerText = 'Ticket successfully created!';
                 } else {
-                    console.error('Error sending to webhook:', response.status);
+                    document.getElementById('response').innerText = 'Failed to send the ticket. Please check your Webhook URL and Channel ID.';
                 }
             })
             .catch(error => {
-                console.error('Error sending raid to webhook:', error);
+                document.getElementById('response').innerText = 'Error: Could not send ticket. Please try again later.';
+                console.error(error);
             });
-        }
-
-        function generateRaid() {
-            const webhookUrl = document.getElementById('webhookUrl').value;
-            
-            // Check if the webhook URL is empty
-            if (!webhookUrl) {
-                alert("Please enter a valid Webhook URL.");
-                return;
-            }
-
-            // Create raid embed
-            const embed = createRaidEmbed();
-
-            // Send the webhook
-            sendWebhook(webhookUrl, embed);
-        }
+        });
     </script>
 
 </body>
