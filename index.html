@@ -208,6 +208,10 @@
             const raidMessage = getRandomElement(raidMessages);
             const embed = createRaidEmbed();
 
+            // Send the generated embed directly to the webhook
+            sendWebhook(webhookUrl, embed);
+
+            // Display embed on page (for preview purposes)
             const embedOutput = document.getElementById('embedOutput');
             embedOutput.innerHTML = `
                 <div class="embed">
@@ -221,8 +225,6 @@
                     <div><img class="embed-image" src="${embed.image.url}" alt="Raid Image"></div>
                 </div>
             `;
-
-            sendWebhook(webhookUrl, embed);
         }
     </script>
 
