@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Finder</title>
+    <title>Discord Webhook - Respectful Power Raid (Embed)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,18 +13,9 @@
             padding: 50px;
         }
 
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
         button {
-            padding: 10px 20px;
+            padding: 15px 30px;
+            font-size: 18px;
             background-color: #7289da;
             color: white;
             border: none;
@@ -37,101 +28,156 @@
         }
 
         #result {
-            margin-top: 20px;
+            margin-top: 30px;
+            font-size: 20px;
         }
 
-        .webhook {
-            background-color: #36393f;
+        input {
             padding: 10px;
+            margin: 20px 0;
+            font-size: 16px;
             border-radius: 5px;
-            margin-top: 10px;
-            word-wrap: break-word;
-            width: 80%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 70%;
+            max-width: 500px;
+            border: 1px solid #ccc;
         }
 
-        .copy-button {
-            background-color: #43b581;
-            padding: 5px 10px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .copy-button:hover {
-            background-color: #39a070;
+        input:focus {
+            outline: none;
+            border-color: #7289da;
         }
     </style>
 </head>
 <body>
-    <h1>Discord Webhook Finder</h1>
-    <p>Enter the Guild ID (Server ID) and Webhook URL:</p>
+    <h1>🚨 THE TIME HAS COME! 🚨</h1>
+    <p>Enter your Discord Webhook URL below:</p>
     
-    <input type="text" id="guildId" placeholder="Enter Guild ID">
-    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL">
-    <button onclick="saveWebhook()">Save Webhook</button>
+    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL" />
+    
+    <p>Click below to witness the rise of true power!</p>
+    
+    <button onclick="startRaid()">🔥 Command the Raid! 🔥</button>
 
     <div id="result"></div>
 
     <script>
-        // Check if there are any saved webhooks in localStorage
-        window.onload = function() {
-            const savedWebhooks = JSON.parse(localStorage.getItem('webhooks')) || [];
-            displayWebhooks(savedWebhooks);
-        }
+        const messageList = [
+            {
+                title: "**I AM HERE!**",
+                description: "The server bows to my will.",
+                color: 0x8B0000, // Dark red color for dominance
+            },
+            {
+                title: "**THIS IS MY DOMAIN!**",
+                description: "All who oppose shall tremble!",
+                color: 0x8B0000, // Dark red for power
+            },
+            {
+                title: "**THE STORM IS HERE!**",
+                description: "The raid has begun under MY command!",
+                color: 0x8B0000, // Dark red for intensity
+            },
+            {
+                title: "**TO THE FRONTLINES!**",
+                description: "Fight for the glory of the server—YOUR server!",
+                color: 0x8B0000, // Dark red for power
+            },
+            {
+                title: "**WITNESS MY POWER!**",
+                description: "All forces rally to me, for I AM the leader!",
+                color: 0x8B0000, // Dark red for dominance
+            },
+            {
+                title: "**THE SERVER SHAKES BENEATH ME!**",
+                description: "None shall stand in my way!",
+                color: 0x8B0000, // Dark red for power
+            },
+            {
+                title: "**CRITICAL ALERT!**",
+                description: "The server is now mine—ALL will submit to my will!",
+                color: 0x8B0000, // Dark red for power
+            },
+            {
+                title: "**PREPARE YOURSELVES!**",
+                description: "Under MY banner, we rise above!",
+                color: 0x8B0000, // Dark red for authority
+            },
+            {
+                title: "**BY MY DECREE!**",
+                description: "The raid is unrelenting—NO ONE CAN STOP US!",
+                color: 0x8B0000, // Dark red for dominance
+            },
+            {
+                title: "**I COMMAND THIS SERVER!**",
+                description: "Respect, or face annihilation!",
+                color: 0x8B0000, // Dark red for authority
+            }
+        ];
 
-        function saveWebhook() {
-            const guildId = document.getElementById("guildId").value;
+        let raidInterval;
+
+        function startRaid() {
             const webhookUrl = document.getElementById("webhookUrl").value;
-            
-            if (!guildId || !webhookUrl) {
-                alert("Please enter both Guild ID and Webhook URL");
+            if (!webhookUrl) {
+                alert("Please enter a valid Webhook URL!");
                 return;
             }
 
-            const savedWebhooks = JSON.parse(localStorage.getItem('webhooks')) || [];
-            savedWebhooks.push({ guildId, webhookUrl });
+            // Clear any ongoing raid
+            clearInterval(raidInterval);
+            document.getElementById("result").innerHTML = ''; // Reset the results
+            triggerChaos(webhookUrl); // Start the chaos right away
 
-            // Save webhooks in localStorage
-            localStorage.setItem('webhooks', JSON.stringify(savedWebhooks));
+            // Random interval to simulate the raid-like feeling
+            raidInterval = setInterval(() => triggerChaos(webhookUrl), 1000);
             
-            // Display the updated list
-            displayWebhooks(savedWebhooks);
-
-            // Clear inputs
-            document.getElementById("guildId").value = "";
-            document.getElementById("webhookUrl").value = "";
+            // Stop the chaos after 10 seconds
+            setTimeout(() => {
+                clearInterval(raidInterval);
+                displayFinalMessage(webhookUrl);
+            }, 10000); // Raid lasts 10 seconds
         }
 
-        function displayWebhooks(webhooks) {
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = '';
+        function triggerChaos(webhookUrl) {
+            const randomMessage = messageList[Math.floor(Math.random() * messageList.length)];
+            sendToDiscord(webhookUrl, randomMessage);  // Send embed to Discord
+        }
 
-            if (webhooks.length === 0) {
-                resultDiv.innerHTML = "No webhooks saved.";
-                return;
+        function displayFinalMessage(webhookUrl) {
+            const finalMessage = {
+                title: "**THE RAID ENDS... BUT MY POWER REMAINS!**",
+                description: "You are now under my rule, forever.",
+                color: 0x8B0000, // Dark red for power and dominance
+            };
+
+            sendToDiscord(webhookUrl, finalMessage); // Send final power message
+        }
+
+        // Function to send the message to Discord via webhook
+        async function sendToDiscord(webhookUrl, embedData) {
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: embedData.title,
+                            description: embedData.description,
+                            color: embedData.color,
+                        }]
+                    })
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    console.log("Message sent to Discord:", embedData.title);
+                } else {
+                    console.error("Failed to send message to Discord", result);
+                }
+            } catch (error) {
+                console.error("Error sending message to Discord", error);
             }
-
-            webhooks.forEach(webhook => {
-                const webhookElement = `
-                    <div class="webhook">
-                        <p><strong>Guild ID:</strong> ${webhook.guildId}</p>
-                        <p><strong>Webhook URL:</strong> <span>${webhook.webhookUrl}</span></p>
-                        <button class="copy-button" onclick="copyWebhook('${webhook.webhookUrl}')">Copy Webhook</button>
-                    </div>
-                `;
-                resultDiv.innerHTML += webhookElement;
-            });
-        }
-
-        function copyWebhook(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                alert("Webhook URL copied to clipboard!");
-            });
         }
     </script>
 </body>
