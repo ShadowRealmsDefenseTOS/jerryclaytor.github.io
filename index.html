@@ -3,182 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook - Respectful Power Raid (Embed)</title>
+    <title>Overpowered Discord Webhook Sender</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #2f3136;
-            color: white;
+            background-color: #121212;
+            color: #fff;
             text-align: center;
             padding: 50px;
         }
-
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #7289da;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #5b6eae;
-        }
-
-        #result {
-            margin-top: 30px;
-            font-size: 20px;
-        }
-
-        input {
+        input, button {
             padding: 10px;
-            margin: 20px 0;
+            margin: 10px;
             font-size: 16px;
             border-radius: 5px;
-            width: 70%;
-            max-width: 500px;
-            border: 1px solid #ccc;
+            border: none;
         }
-
-        input:focus {
-            outline: none;
-            border-color: #7289da;
+        button {
+            background-color: #ff5c5c;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff3333;
+        }
+        h1 {
+            color: #ff5c5c;
+        }
+        .embed-container {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>🚨 THE TIME HAS COME! 🚨</h1>
-    <p>Enter your Discord Webhook URL below:</p>
-    
-    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL" />
-    
-    <p>Click below to witness the rise of true power!</p>
-    
-    <button onclick="startRaid()">🔥 Command the Raid! 🔥</button>
 
-    <div id="result"></div>
+    <h1>Overpowered Webhook Sender</h1>
+    <p>Enter your Discord Webhook URL and click "RAID" to send the powerful message to your server!</p>
+
+    <input type="text" id="webhookUrl" placeholder="Enter your webhook URL">
+    <button onclick="sendRaid()">RAID</button>
+
+    <div class="embed-container" id="embedOutput"></div>
 
     <script>
-        const messageList = [
-            {
-                title: "**I AM HERE!**",
-                description: "The server bows to my will.",
-                color: 0x8B0000, // Dark red color for dominance
-            },
-            {
-                title: "**THIS IS MY DOMAIN!**",
-                description: "All who oppose shall tremble!",
-                color: 0x8B0000, // Dark red for power
-            },
-            {
-                title: "**THE STORM IS HERE!**",
-                description: "The raid has begun under MY command!",
-                color: 0x8B0000, // Dark red for intensity
-            },
-            {
-                title: "**TO THE FRONTLINES!**",
-                description: "Fight for the glory of the server—YOUR server!",
-                color: 0x8B0000, // Dark red for power
-            },
-            {
-                title: "**WITNESS MY POWER!**",
-                description: "All forces rally to me, for I AM the leader!",
-                color: 0x8B0000, // Dark red for dominance
-            },
-            {
-                title: "**THE SERVER SHAKES BENEATH ME!**",
-                description: "None shall stand in my way!",
-                color: 0x8B0000, // Dark red for power
-            },
-            {
-                title: "**CRITICAL ALERT!**",
-                description: "The server is now mine—ALL will submit to my will!",
-                color: 0x8B0000, // Dark red for power
-            },
-            {
-                title: "**PREPARE YOURSELVES!**",
-                description: "Under MY banner, we rise above!",
-                color: 0x8B0000, // Dark red for authority
-            },
-            {
-                title: "**BY MY DECREE!**",
-                description: "The raid is unrelenting—NO ONE CAN STOP US!",
-                color: 0x8B0000, // Dark red for dominance
-            },
-            {
-                title: "**I COMMAND THIS SERVER!**",
-                description: "Respect, or face annihilation!",
-                color: 0x8B0000, // Dark red for authority
-            }
-        ];
+        function getRandomizedName() {
+            const names = ['The Unstoppable', 'Master of Realms', 'The Silent Destroyer', 'Wielder of Shadows', 'Overlord of Discord'];
+            return names[Math.floor(Math.random() * names.length)];
+        }
 
-        let raidInterval;
+        function generateEmbed() {
+            const avatarUrl = 'https://example.com/path/to/your/avatar.jpg'; // Replace with your image URL
+            const raidImageUrl = 'https://example.com/path/to/raid_image.jpg'; // Replace with a raid-themed image URL
 
-        function startRaid() {
-            const webhookUrl = document.getElementById("webhookUrl").value;
+            return {
+                "content": "@everyone",  // Pinging everyone
+                "embeds": [{
+                    "title": "🚨 ATTENTION EVERYONE! 🚨",
+                    "description": "The **" + getRandomizedName() + "** has arrived! **Prepare for destruction!**",
+                    "color": 0xFF0000,
+                    "author": {
+                        "name": "Shadows Realms Defense",
+                        "icon_url": avatarUrl // Avatar icon for the bot or your image
+                    },
+                    "thumbnail": {
+                        "url": avatarUrl // Avatar thumbnail
+                    },
+                    "image": {
+                        "url": raidImageUrl // Large raid-themed image
+                    },
+                    "fields": [
+                        {
+                            "name": "⚡ COMMAND",
+                            "value": "**EVERYONE MUST RESPECT THE POWER!**",
+                            "inline": false
+                        },
+                        {
+                            "name": "🔥 STATUS",
+                            "value": "You are now under the control of the Overpowered One!",
+                            "inline": false
+                        }
+                    ],
+                    "footer": {
+                        "text": "Shadows Realms Defense | Overpowering Discord",
+                        "icon_url": avatarUrl // Footer avatar
+                    }
+                }]
+            };
+        }
+
+        function sendRaid() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
             if (!webhookUrl) {
-                alert("Please enter a valid Webhook URL!");
+                alert("Please enter a valid webhook URL.");
                 return;
             }
 
-            // Clear any ongoing raid
-            clearInterval(raidInterval);
-            document.getElementById("result").innerHTML = ''; // Reset the results
-            triggerChaos(webhookUrl); // Start the chaos right away
+            const embedData = generateEmbed();
 
-            // Random interval to simulate the raid-like feeling
-            raidInterval = setInterval(() => triggerChaos(webhookUrl), 1000);
-            
-            // Stop the chaos after 10 seconds
-            setTimeout(() => {
-                clearInterval(raidInterval);
-                displayFinalMessage(webhookUrl);
-            }, 10000); // Raid lasts 10 seconds
-        }
-
-        function triggerChaos(webhookUrl) {
-            const randomMessage = messageList[Math.floor(Math.random() * messageList.length)];
-            sendToDiscord(webhookUrl, randomMessage);  // Send embed to Discord
-        }
-
-        function displayFinalMessage(webhookUrl) {
-            const finalMessage = {
-                title: "**THE RAID ENDS... BUT MY POWER REMAINS!**",
-                description: "You are now under my rule, forever.",
-                color: 0x8B0000, // Dark red for power and dominance
-            };
-
-            sendToDiscord(webhookUrl, finalMessage); // Send final power message
-        }
-
-        // Function to send the message to Discord via webhook
-        async function sendToDiscord(webhookUrl, embedData) {
-            try {
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        embeds: [{
-                            title: embedData.title,
-                            description: embedData.description,
-                            color: embedData.color,
-                        }]
-                    })
-                });
-                const result = await response.json();
-                if (response.ok) {
-                    console.log("Message sent to Discord:", embedData.title);
-                } else {
-                    console.error("Failed to send message to Discord", result);
-                }
-            } catch (error) {
-                console.error("Error sending message to Discord", error);
-            }
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(embedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Successfully sent message:', data);
+                alert("Raid sent successfully!");
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                alert("Failed to send raid.");
+            });
         }
     </script>
+
 </body>
 </html>
