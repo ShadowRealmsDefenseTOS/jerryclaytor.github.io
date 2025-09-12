@@ -189,42 +189,35 @@
                     embeds: [embed]
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Successfully sent raid to webhook:', data);
+            .then(response => {
+                if (response.ok) {
+                    console.log('Successfully sent raid to webhook');
+                    alert("Raid sent successfully!");
+                } else {
+                    console.error('Error sending to webhook:', response.status);
+                    alert("Failed to send raid.");
+                }
             })
             .catch(error => {
                 console.error('Error sending raid to webhook:', error);
+                alert("Failed to send raid.");
             });
         }
 
         function generateRaid() {
             const webhookUrl = document.getElementById('webhookUrl').value;
+            
+            // Check if the webhook URL is empty
             if (!webhookUrl) {
-                alert("Please enter a webhook URL.");
+                alert("Please enter a valid Webhook URL.");
                 return;
             }
 
-            const raidMessage = getRandomElement(raidMessages);
+            // Create raid embed
             const embed = createRaidEmbed();
 
-            // Send the generated embed directly to the webhook
+            // Send the webhook
             sendWebhook(webhookUrl, embed);
-
-            // Display embed on page (for preview purposes)
-            const embedOutput = document.getElementById('embedOutput');
-            embedOutput.innerHTML = `
-                <div class="embed">
-                    <div class="embed-title">${embed.title}</div>
-                    <div class="embed-description">${embed.description}</div>
-                    <div><strong>Status:</strong> ${embed.fields[0].value}</div>
-                    <div><strong>Target:</strong> ${embed.fields[1].value}</div>
-                    <div><strong>Time Left:</strong> ${embed.fields[2].value}</div>
-                    <div><strong>Raid Message:</strong> ${raidMessage}</div>
-                    <div><strong>Username:</strong> ${getRandomElement(usernames)}</div>
-                    <div><img class="embed-image" src="${embed.image.url}" alt="Raid Image"></div>
-                </div>
-            `;
         }
     </script>
 
