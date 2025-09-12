@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Raid Generator</title>
+    <title>Ultimate Discord Raid Bot</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -192,15 +192,12 @@
             .then(response => {
                 if (response.ok) {
                     console.log('Successfully sent raid to webhook');
-                    alert("Raid sent successfully!");
                 } else {
                     console.error('Error sending to webhook:', response.status);
-                    alert("Failed to send raid.");
                 }
             })
             .catch(error => {
                 console.error('Error sending raid to webhook:', error);
-                alert("Failed to send raid.");
             });
         }
 
