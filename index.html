@@ -60,6 +60,8 @@
 <body>
 
     <h1>Ultimate Raid Generator</h1>
+    <input type="text" id="webhookUrl" placeholder="Enter Webhook URL" style="width: 80%; padding: 10px; font-size: 16px;"/>
+    <br>
     <button onclick="generateRaid()">RAID NOW!</button>
 
     <div class="embed-container" id="embedOutput"></div>
@@ -175,9 +177,35 @@
             return embed;
         }
 
+        function sendWebhook(webhookUrl, embed) {
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: getRandomElement(usernames),
+                    avatar_url: 'https://i.imgur.com/fKL9TmC.jpg', // Example Avatar
+                    embeds: [embed]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Successfully sent raid to webhook:', data);
+            })
+            .catch(error => {
+                console.error('Error sending raid to webhook:', error);
+            });
+        }
+
         function generateRaid() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            if (!webhookUrl) {
+                alert("Please enter a webhook URL.");
+                return;
+            }
+
             const raidMessage = getRandomElement(raidMessages);
-            const username = getRandomElement(usernames);
             const embed = createRaidEmbed();
 
             const embedOutput = document.getElementById('embedOutput');
@@ -189,10 +217,12 @@
                     <div><strong>Target:</strong> ${embed.fields[1].value}</div>
                     <div><strong>Time Left:</strong> ${embed.fields[2].value}</div>
                     <div><strong>Raid Message:</strong> ${raidMessage}</div>
-                    <div><strong>Username:</strong> ${username}</div>
+                    <div><strong>Username:</strong> ${getRandomElement(usernames)}</div>
                     <div><img class="embed-image" src="${embed.image.url}" alt="Raid Image"></div>
                 </div>
             `;
+
+            sendWebhook(webhookUrl, embed);
         }
     </script>
 
