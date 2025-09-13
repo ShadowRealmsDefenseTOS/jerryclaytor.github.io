@@ -23,7 +23,7 @@
     .form-section, .template-section {
       margin-bottom: 30px;
     }
-    input, textarea, button {
+    input, button {
       width: 100%;
       padding: 10px;
       margin: 5px 0;
@@ -32,18 +32,28 @@
       background-color: #2c2f33;
       color: white;
     }
-    .template-card {
+    .template-card, .card {
       background-color: #333;
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 10px;
     }
-    .template-card a {
+    .template-card h3, .card h3 {
+      margin: 0;
+    }
+    .template-card a, .card a {
       color: #7289da;
       text-decoration: none;
     }
-    .template-card a:hover {
+    .template-card a:hover, .card a:hover {
       text-decoration: underline;
+    }
+    .card-group {
+      display: flex;
+      gap: 20px;
+    }
+    .card {
+      flex: 1;
     }
   </style>
 </head>
@@ -56,10 +66,8 @@
 <div class="container">
   <!-- Form to Add New Template (Only for you) -->
   <div class="form-section">
-    <h2>Add a New Template</h2>
-    <input type="text" id="templateName" placeholder="Template Name" />
-    <textarea id="templateDescription" placeholder="Template Description"></textarea>
-    <input type="text" id="templateLink" placeholder="Template Link" />
+    <h2>Submit a New Template</h2>
+    <input type="text" id="templateLink" placeholder="Template Link (Discord invite link)" />
     <button id="addTemplateBtn">Add Template</button>
   </div>
 
@@ -72,8 +80,6 @@
 
 <script>
   // Get the form inputs
-  const templateNameInput = document.getElementById('templateName');
-  const templateDescriptionInput = document.getElementById('templateDescription');
   const templateLinkInput = document.getElementById('templateLink');
   const addTemplateBtn = document.getElementById('addTemplateBtn');
   const templateList = document.getElementById('templateList');
@@ -89,38 +95,52 @@
         <h3>${template.name}</h3>
         <p>${template.description}</p>
         <a href="${template.link}" target="_blank">View Template</a>
+        <div class="card-group">
+          <div class="card">
+            <h3>Channels & Categories</h3>
+            <ul>${template.channels.map(ch => `<li>${ch}</li>`).join('')}</ul>
+          </div>
+          <div class="card">
+            <h3>Roles</h3>
+            <ul>${template.roles.map(role => `<li>${role}</li>`).join('')}</ul>
+          </div>
+        </div>
       `;
       templateList.appendChild(templateCard);
     });
   };
 
+  // Simulate fetching server data (Mock Data for now)
+  const fetchServerData = (link) => {
+    // Here, you would normally make an API request to fetch server info.
+    return {
+      name: 'Sample Discord Server',
+      description: 'A description of the template server.',
+      link: link,
+      channels: ['#general', '#music', '#games'],
+      roles: ['Admin', 'Member', 'Bot'],
+    };
+  };
+
   // Add a new template
   const addTemplate = () => {
-    const name = templateNameInput.value.trim();
-    const description = templateDescriptionInput.value.trim();
     const link = templateLinkInput.value.trim();
 
-    if (name && description && link) {
-      const newTemplate = { name, description, link };
+    if (link) {
+      const serverData = fetchServerData(link);
 
-      // Get existing templates from localStorage
+      // Add the new template to localStorage
       const templates = JSON.parse(localStorage.getItem('templates')) || [];
-
-      // Add the new template to the list
-      templates.push(newTemplate);
-
-      // Save the updated templates back to localStorage
+      templates.push(serverData);
       localStorage.setItem('templates', JSON.stringify(templates));
 
-      // Clear the form inputs
-      templateNameInput.value = '';
-      templateDescriptionInput.value = '';
+      // Clear the form input
       templateLinkInput.value = '';
 
       // Reload templates to show the newly added one
       loadTemplates();
     } else {
-      alert('Please fill in all fields!');
+      alert('Please provide a template link!');
     }
   };
 
