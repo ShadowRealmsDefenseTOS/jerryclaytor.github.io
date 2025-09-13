@@ -3,103 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Ticket System</title>
+    <title>Rotating Gear</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #1e1e1e;
-            color: white;
+        .gear {
+            width: 100px; /* Adjust size as needed */
+            animation: rotate 2s linear infinite; /* Animation duration, type, and infinite loop */
         }
-        h2 {
-            text-align: center;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            margin: 0 auto;
-            max-width: 400px;
-        }
-        label, input, button {
-            margin-bottom: 10px;
-        }
-        button {
-            background-color: #0099ff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            color: white;
-        }
-        button:hover {
-            background-color: #0077cc;
-        }
-        #response {
-            margin-top: 20px;
-            text-align: center;
-            color: green;
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
-
-    <h2>Create a Ticket</h2>
-    <form id="ticketForm">
-        <label for="webhookURL">Webhook URL:</label>
-        <input type="text" id="webhookURL" placeholder="Enter your Discord Webhook URL" required>
-        
-        <label for="ticketChannel">Channel ID:</label>
-        <input type="text" id="ticketChannel" placeholder="Enter Channel ID" required>
-        
-        <button type="submit">Create Ticket</button>
-    </form>
-
-    <div id="response"></div>
-
-    <script>
-        document.getElementById('ticketForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const webhookURL = document.getElementById('webhookURL').value;
-            const ticketChannel = document.getElementById('ticketChannel').value;
-
-            // Create the embed payload
-            const embedPayload = {
-                "content": null,
-                "embeds": [{
-                    "color": 7506394,
-                    "title": "New Ticket Created",
-                    "description": `A new ticket was created in channel ID: ${ticketChannel}`,
-                    "fields": [{
-                        "name": "Ticket Channel ID",
-                        "value": ticketChannel,
-                        "inline": true
-                    }],
-                    "timestamp": new Date().toISOString()
-                }]
-            };
-
-            // Send the embed to the webhook URL
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(embedPayload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.type === 6) {
-                    document.getElementById('response').innerText = 'Ticket successfully created!';
-                } else {
-                    document.getElementById('response').innerText = 'Failed to send the ticket. Please check your Webhook URL and Channel ID.';
-                }
-            })
-            .catch(error => {
-                document.getElementById('response').innerText = 'Error: Could not send ticket. Please try again later.';
-                console.error(error);
-            });
-        });
-    </script>
-
+    <img src="download.png" alt="Rotating Gear" class="gear">
 </body>
 </html>
