@@ -1,26 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotating Gear</title>
-    <style>
-        .gear {
-            width: 100px; /* Adjust size as needed */
-            animation: rotate 2s linear infinite; /* Animation duration, type, and infinite loop */
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Templates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #202225;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+    }
+    .form-section, .template-section {
+      margin-bottom: 30px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #333;
+      background-color: #2c2f33;
+      color: white;
+    }
+    .template-card {
+      background-color: #333;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .template-card a {
+      color: #7289da;
+      text-decoration: none;
+    }
+    .template-card a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <img src="download.png" alt="Rotating Gear" class="gear">
+
+<header>
+  <h1>Discord Templates</h1>
+</header>
+
+<div class="container">
+  <!-- Form to Add New Template (Only for you) -->
+  <div class="form-section">
+    <h2>Add a New Template</h2>
+    <input type="text" id="templateName" placeholder="Template Name" />
+    <textarea id="templateDescription" placeholder="Template Description"></textarea>
+    <input type="text" id="templateLink" placeholder="Template Link" />
+    <button id="addTemplateBtn">Add Template</button>
+  </div>
+
+  <!-- Section to Display Saved Templates -->
+  <div class="template-section">
+    <h2>Available Templates</h2>
+    <div id="templateList"></div>
+  </div>
+</div>
+
+<script>
+  // Get the form inputs
+  const templateNameInput = document.getElementById('templateName');
+  const templateDescriptionInput = document.getElementById('templateDescription');
+  const templateLinkInput = document.getElementById('templateLink');
+  const addTemplateBtn = document.getElementById('addTemplateBtn');
+  const templateList = document.getElementById('templateList');
+
+  // Check if there are any templates saved in localStorage
+  const loadTemplates = () => {
+    const templates = JSON.parse(localStorage.getItem('templates')) || [];
+    templateList.innerHTML = '';
+    templates.forEach((template) => {
+      const templateCard = document.createElement('div');
+      templateCard.classList.add('template-card');
+      templateCard.innerHTML = `
+        <h3>${template.name}</h3>
+        <p>${template.description}</p>
+        <a href="${template.link}" target="_blank">View Template</a>
+      `;
+      templateList.appendChild(templateCard);
+    });
+  };
+
+  // Add a new template
+  const addTemplate = () => {
+    const name = templateNameInput.value.trim();
+    const description = templateDescriptionInput.value.trim();
+    const link = templateLinkInput.value.trim();
+
+    if (name && description && link) {
+      const newTemplate = { name, description, link };
+
+      // Get existing templates from localStorage
+      const templates = JSON.parse(localStorage.getItem('templates')) || [];
+
+      // Add the new template to the list
+      templates.push(newTemplate);
+
+      // Save the updated templates back to localStorage
+      localStorage.setItem('templates', JSON.stringify(templates));
+
+      // Clear the form inputs
+      templateNameInput.value = '';
+      templateDescriptionInput.value = '';
+      templateLinkInput.value = '';
+
+      // Reload templates to show the newly added one
+      loadTemplates();
+    } else {
+      alert('Please fill in all fields!');
+    }
+  };
+
+  // Event listener for the Add Template button
+  addTemplateBtn.addEventListener('click', addTemplate);
+
+  // Load saved templates when the page loads
+  window.onload = loadTemplates;
+</script>
+
 </body>
 </html>
